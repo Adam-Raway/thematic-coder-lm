@@ -20,7 +20,7 @@ Text data must follow the following format, where each text has annotations in a
     "themes": {
       "<theme-name>": {
         "codes": {
-          "<code-name>": {"section": [startIndex: endIndex] "confidence": 0.9, "annotator": "gpt-4"}
+          "<code-name>": {"section": [0: 5] "confidence": 0.9, "annotator": "gpt-4"}
         }
       }
     }
