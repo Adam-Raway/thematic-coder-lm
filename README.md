@@ -18,19 +18,26 @@ QnA data must follow the following format, where each text has annotations in a 
   "themes" : {
     "<theme-name>": ["<code-name>", "..."]
   },
-  "answers" : {
-    "id": 0,
-    "text": "...",
-    "annotations": {
-      "<theme-name>": {
-        "<code-name>": {"section": "", "confidence": 1, "annotator": "human"},
-        "<code-name>": {"section": "[0: 5]", "confidence": 1, "annotator": "human"}
-      },
-      "<theme-name>": {
-        "<code-name>": {"section": "[0: 5]", "confidence": 0.9, "annotator": "gpt-4"}
+  "answers" : [
+    {
+      "id": 0,
+      "text": "...",
+      "annotations": {
+        "<theme-name>": {
+          "<code-name>": {"section": "", "confidence": 1, "annotator": "human"},
+          "<code-name>": {"section": "[0: 5]", "confidence": 1, "annotator": "human"}
+        },
+        "<theme-name>": {
+          "<code-name>": {"section": "[0: 5]", "confidence": 0.9, "annotator": "gpt-4"}
+        }
       }
+    },
+    {
+      "id": 1,
+      "text": "...",
+      "annotations": {}
     }
-  }
+  ]
 }
 
 
