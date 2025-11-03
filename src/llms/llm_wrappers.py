@@ -1,5 +1,5 @@
 import json
-import os
+import re
 from abc import ABC, abstractmethod
 from dotenv import load_dotenv
 
@@ -20,15 +20,29 @@ class AbstractLLM(ABC):
     def generate(self, prompt: str) -> str:
         pass
 
+    def clean_and_parse_json(self, response: str):
+        """Cleans markdown and extracts JSON content robustly."""
+        response = response.strip()
+        response = re.sub(r"^```(?:json)?\s*", "", response, flags=re.IGNORECASE)
+        response = re.sub(r"\s*```$", "", response)
+
+        try:
+            return json.loads(response)
+        except json.JSONDecodeError as e:
+            match = re.search(r"\{.*\}", response, flags=re.DOTALL)
+            if match:
+                return json.loads(match.group(0))
+            raise ValueError(f"LLM did not return valid JSON: {response}") from e
+
     def generate_json(self, prompt: str, schema: dict) -> dict:
         # Optionally add a JSON validation layer here
-        response = self.generate(prompt)
-        try:
-            parsed = json.loads(response)
-        except Exception:
-            raise ValueError(f"LLM did not return valid JSON: {response}")
+        response = self.generate(prompt).strip()
+
+        parsed = self.clean_and_parse_json(response)
+
         # optional: validate against schema here
         return parsed
+
 
     @staticmethod
     def from_name(model_name: str, **kwargs) -> 'AbstractLLM':
