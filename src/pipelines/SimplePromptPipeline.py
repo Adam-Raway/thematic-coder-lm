@@ -1,6 +1,6 @@
 import json, os, re
 from datetime import datetime
-from src.llms.llm_wrappers import AbstractLLM
+from src.llms.LLM_Wrappers import AbstractLLM
 from src.pipelines.AbstractTAPipeline import AbstractTAPipeline
 
 

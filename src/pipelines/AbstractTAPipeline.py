@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from src.llms.llm_wrappers import AbstractLLM
+from src.llms.LLM_Wrappers import AbstractLLM
 from tqdm import tqdm
 import json, copy, os
 
