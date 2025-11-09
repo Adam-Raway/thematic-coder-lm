@@ -17,10 +17,8 @@ class AbstractTAPipeline(ABC):
         self.llm = llm
         self.input_path = input_path
         self.output_dir = output_dir
-        self.output_name = output_name
         self.use_cache = use_cache
 
-        self.cache_path = self._get_cache_path()
         self.output_path = self._make_output_path(input_path, output_dir, output_name)
 
         self.data = None
@@ -103,6 +101,7 @@ class AbstractTAPipeline(ABC):
             annotated_name = f"{base}_{output_name}{ext}"
         else:
             annotated_name = f"{base}_annotated{ext}"
+        output_name = annotated_name
 
         if output_dir:
             os.makedirs(output_dir, exist_ok=True)
@@ -155,6 +154,7 @@ class AbstractTAPipeline(ABC):
     def run(self) -> str:
         """Runs the annotation pipeline with a live progress bar and caching support."""
         # Check cache before running
+        self.cache_path = self._get_cache_path()
         cached_path = self._check_cache()
         if cached_path:
             print(f"Skipping run — returning cached file: {cached_path}")

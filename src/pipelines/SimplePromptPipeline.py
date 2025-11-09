@@ -23,6 +23,9 @@ class SimplePromptPipeline(AbstractTAPipeline):
         self.log_path = os.path.join(log_dir, f"{input_name}_{timestamp}.log")
         self.log_file = open(self.log_path, "a", encoding="utf-8")
 
+    def __str__(self):
+        return "SimplePromptPipeline"
+
     def log(self, message: str):
         ts = datetime.now().strftime("%H:%M:%S")
         self.log_file.write(f"[{ts}] {message}\n")
@@ -121,7 +124,7 @@ if __name__ == "__main__":
         llm,
         "src/data/test.json",
         output_dir="outputs/",
-        output_name="qwen3:4b",
+        output_name="qwen3:4b-test",
         use_cache=True
     )
     pipeline.run()
