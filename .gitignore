@@ -5,6 +5,8 @@
 /src/data/*
 /outputs/*
 
+.ta_pipeline_cache.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

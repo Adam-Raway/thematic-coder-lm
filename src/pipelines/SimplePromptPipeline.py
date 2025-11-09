@@ -1,12 +1,19 @@
-import json, os, re
+import json, os
 from datetime import datetime
 from src.llms.LLM_Wrappers import AbstractLLM
 from src.pipelines.AbstractTAPipeline import AbstractTAPipeline
 
-
 class SimplePromptPipeline(AbstractTAPipeline):
-    def __init__(self, llm: AbstractLLM, input_path: str, output_dir: str | None = None, log_dir: str = "logs"):
-        super().__init__(llm, input_path, output_dir)
+    def __init__(
+        self,
+        llm: AbstractLLM,
+        input_path: str,
+        output_dir: str | None = None,
+        output_name: str | None = None,
+        log_dir: str = "logs",
+        use_cache: bool = True
+    ):
+        super().__init__(llm, input_path, output_dir, output_name, use_cache)
         self.log_dir = log_dir
         os.makedirs(log_dir, exist_ok=True)
 
@@ -17,7 +24,6 @@ class SimplePromptPipeline(AbstractTAPipeline):
         self.log_file = open(self.log_path, "a", encoding="utf-8")
 
     def log(self, message: str):
-        """Append a message to the single log file with timestamp."""
         ts = datetime.now().strftime("%H:%M:%S")
         self.log_file.write(f"[{ts}] {message}\n")
         self.log_file.flush()
@@ -81,7 +87,6 @@ class SimplePromptPipeline(AbstractTAPipeline):
                 }
 
         except Exception as e:
-            # Log error and raw output
             self.log(f"Entry {entry['id']}: JSON parsing error: {e}")
             self.log(f"Raw LLM output:\n{response}\n{'-'*60}")
             entry["annotations"] = {
@@ -97,10 +102,10 @@ class SimplePromptPipeline(AbstractTAPipeline):
         return entry
 
     def run(self) -> str:
-        self.log(f"=== Pipeline started for {self.input_path} ===")
+        self.log(f"=== Pipeline started for {self.input_path} using {self.llm.model_name} ===")
         try:
             output_path = super().run()
-            self.log("Pipeline completed successfully.")
+            self.log(f"Pipeline completed successfully. Output at {output_path}")
         except Exception as e:
             self.log(f"Pipeline failed: {e}")
             raise
@@ -108,10 +113,15 @@ class SimplePromptPipeline(AbstractTAPipeline):
             self.log_file.close()
             print(f"Logs saved to {self.log_path}")
         return output_path
-    
 
-if __name__ == '__main__':
-    # Example usage
+
+if __name__ == "__main__":
     llm = AbstractLLM.from_name("qwen3:4b")
-    pipeline = SimplePromptPipeline(llm, "src/data/Q17_Annotated_Responses.json", "outputs/")
+    pipeline = SimplePromptPipeline(
+        llm,
+        "src/data/test.json",
+        output_dir="outputs/",
+        output_name="qwen3:4b",
+        use_cache=True
+    )
     pipeline.run()
