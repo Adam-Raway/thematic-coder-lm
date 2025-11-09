@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from src.llms.LLM_Wrappers import AbstractLLM
 from tqdm import tqdm
 import json, copy, os
+from time import time
 
 class AbstractTAPipeline(ABC):
     def __init__(self, llm: AbstractLLM, input_path: str, output_dir: str | None = None):
@@ -42,8 +43,27 @@ class AbstractTAPipeline(ABC):
         if "annotations" not in entry:
             raise ValueError("Missing 'annotations' field after annotation.")
         return True
+    
+    def validate_annotation_structure(self, annotations: dict) -> bool:
+        if not isinstance(annotations, dict):
+            return False
+        for theme, codes in annotations.items():
+            if not isinstance(codes, dict):
+                return False
+            for code, details in codes.items():
+                if not isinstance(details, dict):
+                    return False
+                if not {"section", "confidence", "annotator"}.issubset(details.keys()):
+                    return False
+                if not isinstance(details["section"], str):
+                    return False
+                if not isinstance(details["confidence"], (int, float)):
+                    return False
+                if not isinstance(details["annotator"], str):
+                    return False
+        return True
 
-    def run(self):
+    def run(self) -> str:
         """Runs the annotation pipeline with a live progress bar."""
         self.load_data()
         annotated = copy.deepcopy(self.data)
@@ -63,10 +83,10 @@ class AbstractTAPipeline(ABC):
                     pbar.update(1)
                     continue
 
-                start_time = time.time()
+                start_time = time()
                 entry = self.annotate_entry(entry)
                 self.validate_output(entry)
-                elapsed = time.time() - start_time
+                elapsed = time() - start_time
 
                 processed += 1
                 pbar.set_postfix_str(f"Last: {elapsed:.2f}s")
@@ -75,3 +95,5 @@ class AbstractTAPipeline(ABC):
         self.data = annotated
         self.save_data()
         print(f"Annotated JSON written to {self.output_path}")
+
+        return self.output_path

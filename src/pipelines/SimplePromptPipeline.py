@@ -62,8 +62,24 @@ class SimplePromptPipeline(AbstractTAPipeline):
 
         try:
             result = self.llm.clean_and_parse_json(response)
-            entry["annotations"] = result.get("annotations", {})
-            self.log(f"Entry {entry['id']}: JSON processed successfully.")
+            annotation = result.get("annotations", {})
+
+            if self.validate_annotation_structure(annotation):
+                entry["annotations"] = annotation
+                self.log(f"Entry {entry['id']}: JSON processed successfully.")
+            else:
+                self.log(f"Entry {entry['id']}: JSON produced but invalid format.")
+                self.log(f"Raw LLM output:\n{response}\n{'-'*60}")
+                entry["annotations"] = {
+                    "Error": {
+                        "InvalidFormat": {
+                            "section": "",
+                            "confidence": 0.0,
+                            "annotator": self.llm.model_name
+                        }
+                    }
+                }
+
         except Exception as e:
             # Log error and raw output
             self.log(f"Entry {entry['id']}: JSON parsing error: {e}")
@@ -80,10 +96,10 @@ class SimplePromptPipeline(AbstractTAPipeline):
 
         return entry
 
-    def run(self):
+    def run(self) -> str:
         self.log(f"=== Pipeline started for {self.input_path} ===")
         try:
-            super().run()
+            output_path = super().run()
             self.log("Pipeline completed successfully.")
         except Exception as e:
             self.log(f"Pipeline failed: {e}")
@@ -91,6 +107,7 @@ class SimplePromptPipeline(AbstractTAPipeline):
         finally:
             self.log_file.close()
             print(f"Logs saved to {self.log_path}")
+        return output_path
     
 
 if __name__ == '__main__':

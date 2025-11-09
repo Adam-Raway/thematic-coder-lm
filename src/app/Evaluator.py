@@ -51,7 +51,7 @@ class Evaluator:
 
     def evaluate_precision_recall(self, min_confidence: float = 0.5) -> dict:
         """
-        Evaluates precision and recall globally and per theme/code.
+        Evaluates precision, recall, and f1-score globally and per theme/code.
         Returns a dictionary of metrics.
         """
         tp_global, fp_global, fn_global = 0, 0, 0
@@ -90,6 +90,7 @@ class Evaluator:
             "global": {
                 "precision": safe_div(tp_global, tp_global + fp_global),
                 "recall": safe_div(tp_global, tp_global + fn_global),
+                "f1-score": safe_div(2 * tp_global, 2 * tp_global + fp_global + fn_global)
             },
             "per_theme": {},
             "per_code": {},
@@ -99,6 +100,7 @@ class Evaluator:
             results["per_theme"][theme] = {
                 "precision": safe_div(counts["tp"], counts["tp"] + counts["fp"]),
                 "recall": safe_div(counts["tp"], counts["tp"] + counts["fn"]),
+                "f1-score": safe_div(2 * counts["tp"], 2 * counts["tp"] + counts["fp"] + counts["fn"]),
             }
 
         for (theme, code), counts in per_code_counts.items():
@@ -106,6 +108,7 @@ class Evaluator:
             results["per_code"][key] = {
                 "precision": safe_div(counts["tp"], counts["tp"] + counts["fp"]),
                 "recall": safe_div(counts["tp"], counts["tp"] + counts["fn"]),
+                "f1-score": safe_div(2 * counts["tp"], 2 * counts["tp"] + counts["fp"] + counts["fn"]),
             }
 
 
