@@ -4,7 +4,7 @@ from src.llms.LLM_Wrappers import AbstractLLM
 from src.pipelines.AbstractTAPipeline import AbstractTAPipeline
 
 
-class SimplePromptPipeline(AbstractTAPipeline):
+class BetterPromptPipeline(AbstractTAPipeline):
     def __init__(
         self,
         llm: AbstractLLM,
@@ -24,7 +24,7 @@ class SimplePromptPipeline(AbstractTAPipeline):
         self.log_file = open(self.log_path, "a", encoding="utf-8")
 
     def __str__(self):
-        return "SimplePromptPipeline"
+        return "BetterPromptPipeline"
 
     def log(self, message: str):
         ts = datetime.now().strftime("%H:%M:%S")
@@ -64,19 +64,42 @@ class SimplePromptPipeline(AbstractTAPipeline):
 
         # 3. Construct prompt
         prompt = f"""
-        You are a thematic annotator. Based on the following text and codebook, return only a JSON object in the specified format (no explanations).
+        You are a highly accurate thematic annotator. Given a survey question and its response, you apply qualitative codes strictly using the provided codebook to the response. Follow all instructions precisely and output *only* valid JSON.
 
-        Text: {json.dumps(text)}
-        Codebook: {json.dumps(codebook_for_prompt, indent=2)}
+        INSTRUCTIONS:
+        1. Use only themes and codes that appear in the codebook. Never invent new codes.
+        2. Apply a code only if the text clearly supports it. Avoid speculative inference.
+        3. If a code applies to the entire text, set "section": "".
+        4. If a code applies to part of the text, use Python-style character index slicing: "[start:end]".
+        5. Confidence must be a float between 0 and 1.
+        6. If no codes apply, return: {{"annotations": {{}}}}
+        7. Think step-by-step internally, but output only the final JSON object.
+        8. Output strictly valid JSON — no explanations, no notes, no markdown, no code fences.
+        9. Include only themes that contain at least one detected code.
 
-        Output format:
+        OUTPUT SCHEMA (follow exactly):
         {{
-          "annotations": {{
-            "theme_name": {{
-              "code_name": {{"section": "[start:end]", "confidence": float, "annotator": "{self.llm.model_name}"}}
+        "annotations": {{
+            "<theme-name>": {{
+            "<code-name>": {{
+                "section": "[start:end]",
+                "confidence": float,
+                "annotator": "{self.llm.model_name}"
             }}
-          }}
+            }}
         }}
+        }}
+
+        QUESTION:
+        {self._get_question_from_data()}
+
+        CODEBOOK:
+        {json.dumps(codebook_for_prompt, indent=2)}
+
+        TEXT:
+        {json.dumps(text)}
+
+        Return ONLY the JSON object.
         """
 
         # 4. Generate + parse JSON
@@ -131,105 +154,6 @@ class SimplePromptPipeline(AbstractTAPipeline):
         return output_path
 
 
-# ----------------------------------------------------------------------
-# ✅ New variant that *uses* descriptions
-# ----------------------------------------------------------------------
-
-class SimplePromptDescPipeline(SimplePromptPipeline):
-    def __str__(self):
-        return "SimplePromptDescPipeline"
-
-    def _format_codebook(self) -> dict:
-        """
-        Converts the codebook {theme: {code: desc}} into
-        {theme: [{code: desc}, ...]} for descriptive prompting.
-        """
-        formatted = {}
-        for theme, codes in self.codebook.items():
-            if isinstance(codes, dict):
-                formatted[theme] = [
-                    {"code": code, "description": desc or ""}
-                    for code, desc in codes.items()
-                ]
-            else:
-                # fallback if still using legacy format
-                formatted[theme] = [{"code": c, "description": ""} for c in codes]
-        return formatted
-
-    def annotate_entry(self, entry: dict) -> dict:
-        text = entry.get("text", "").strip()
-
-        if not text:
-            entry["annotations"] = {
-                "No Responses": {
-                    "Blank": {
-                        "section": "",
-                        "confidence": 1.0,
-                        "annotator": self.llm.model_name
-                    }
-                }
-            }
-            self.log(f"Entry {entry['id']}: Blank text — annotated with 'Blank' code.")
-            return entry
-
-        # Use descriptive codebook
-        codebook_for_prompt = self._format_codebook()
-
-        prompt = f"""
-        You are a thematic annotator. Based on the following text and detailed codebook,
-        identify relevant themes and codes. Use descriptions to guide your judgment.
-        Return only a JSON object in the specified format (no explanations).
-
-        Text: {json.dumps(text)}
-        Codebook (with descriptions): {json.dumps(codebook_for_prompt, indent=2)}
-
-        Output format:
-        {{
-          "annotations": {{
-            "theme_name": {{
-              "code_name": {{"section": "[start:end]", "confidence": float, "annotator": "{self.llm.model_name}"}}
-            }}
-          }}
-        }}
-        """
-
-        response = self.llm.generate(prompt)
-
-        try:
-            result = self.llm.clean_and_parse_json(response)
-            annotation = result.get("annotations", {})
-
-            if self.validate_annotation_structure(annotation):
-                entry["annotations"] = annotation
-                self.log(f"Entry {entry['id']}: JSON processed successfully (desc mode).")
-            else:
-                self.log(f"Entry {entry['id']}: JSON produced but invalid format (desc mode).")
-                self.log(f"Raw LLM output:\n{response}\n{'-'*60}")
-                entry["annotations"] = {
-                    "Error": {
-                        "InvalidFormat": {
-                            "section": "",
-                            "confidence": 0.0,
-                            "annotator": self.llm.model_name
-                        }
-                    }
-                }
-
-        except Exception as e:
-            self.log(f"Entry {entry['id']}: JSON parsing error (desc mode): {e}")
-            self.log(f"Raw LLM output:\n{response}\n{'-'*60}")
-            entry["annotations"] = {
-                "Error": {
-                    "InvalidJSON": {
-                        "section": "",
-                        "confidence": 0.0,
-                        "annotator": self.llm.model_name
-                    }
-                }
-            }
-
-        return entry
-
 
 # ----------------------------------------------------------------------
 # Example usage
@@ -238,7 +162,7 @@ if __name__ == "__main__":
     llm = AbstractLLM.from_name("gpt-4o-mini")
 
     # Normal (ignores descriptions)
-    pipeline = SimplePromptPipeline(
+    pipeline = BetterPromptPipeline(
         llm,
         "src/data/test.json",
         output_dir="outputs/",
@@ -247,12 +171,3 @@ if __name__ == "__main__":
     )
     pipeline.run()
 
-    # Descriptive version
-    desc_pipeline = SimplePromptDescPipeline(
-        llm,
-        "src/data/test.json",
-        output_dir="outputs/",
-        output_name="qwen3:4b-test-desc",
-        use_cache=True
-    )
-    desc_pipeline.run()

@@ -39,7 +39,7 @@ class Evaluator:
     def _collect_codes(self, annotations: dict, min_confidence: float) -> set:
         """
         Flattens annotations into a set of (theme, code) pairs
-        meeting the min_confidence threshold.
+        meeting the min_confidence threshold (inclusive).
         """
         pairs = set()
         for theme, codes in annotations.items():

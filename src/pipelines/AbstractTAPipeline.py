@@ -98,7 +98,7 @@ class AbstractTAPipeline(ABC):
         base, ext = os.path.splitext(base_name)
 
         if output_name:
-            annotated_name = f"{base}_{output_name}{ext}"
+            annotated_name = f"{base}_{output_name}_annotated{ext}"
         else:
             annotated_name = f"{base}_annotated{ext}"
         output_name = annotated_name
@@ -118,6 +118,13 @@ class AbstractTAPipeline(ABC):
     def save_data(self):
         with open(self.output_path, "w") as f:
             json.dump(self.data, f, indent=2)
+
+    def _get_question_from_data(self) -> str:
+        """Extracts the question text from the input data."""
+        if self.data and "question" in self.data:
+            return self.data["question"]
+        print("⚠️ Warning: No question found in data.")
+        return ""
 
     # ---------- Validation ----------
 
