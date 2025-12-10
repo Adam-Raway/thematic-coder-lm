@@ -1,0 +1,325 @@
+{
+  "question": "How would you describe your experience with the computer science program in your current year of study? How has it been so far?",
+  "themes": {
+    "No Responses": {
+      "Blank": "Description: When the response intentionally provides no information.  | When to apply: If the answer is no text, Blank, No, N/A, etc.  | When *not* to apply: When there is any text that provides some information, even if minimal.",
+      "NoRelevant": "Description: When the response contains information that is irrelevant to the provided question.  | When to apply: On nonsense responses such as 'aaaa', or to responses that are unrelated to the question prompt.  | When *not* to apply: When there is any text that provides some relevant information, even if minimal."
+    },
+    "Social Support": {
+      "PositiveSocial": "Description: When the response indicates positive social support from peers, instructors, or the program community.  | When to apply: If the answer mentions helpfulness, support, community, or positive interactions with others in the program.  | When *not* to apply: When there is no mention of social support, when the mention is negative/neutral., and when the positive adjective is used in a different context (e.g. positive course).",
+      "NegativeBelonging": "Description: When the response indicates feelings of not belonging, isolation, self-doubt, or negative social experiences within the program.  | When to apply: If the answer mentions feeling out of place, unsupported, or negative interactions with others in the program.  | When *not* to apply: When there is no mention of social support, when the mention is positive, and when the negative adjective is used in a different context (e.g. negative online)."
+    },
+    "CS Courses": {
+      "StruggleChallenging": "Description: When the response indicates that their courses or the content have been particularly challenging or difficult in a negative way.  | When to apply: Only if the answer mentions (explicitly or implicitly) that the workload is difficult/causing difficulty and that the student feels negatively about this.  | When *not* to apply: When there is no mention of difficulty, when the mention is positive, when the difficulty is related to another theme (e.g., workload), or when the student mentions that they enjoy the challenge.",
+      "StruggleWorkload": "Description: When the response indicates that their workload has been particularly heavy or unmanageable.  | When to apply: Only if the answer mentions (explicitly or implicitly) that the workload is heavy or that the student has been struggling with the workload (this can include tasks such as labs, tests, time spent studying, etc.).  | When *not* to apply: When there is no mention of workload, when the mention is positive, and when the difficulty is related to another theme (e.g., content difficulty).",
+      "PositiveCourse": "Description: When the response indicates a positive experience with their computer science courses or the content.  | When to apply: If the answer mentions enjoyment, interest, or positive aspects of the courses or content.  | When *not* to apply: When there is no mention of course positivity, when the mention is negative, and when the positive adjective is used in a different context (e.g. positive online).",
+      "NegativeCourse": "Description: When the response indicates a negative experience with their computer science courses or the content.  | When to apply: If the answer mentions dissatisfaction, disinterest, or negative aspects of the courses or content.  | When *not* to apply: When there is no mention of course negativity, when the mention is positive, and when the negative adjective is used in a different context (e.g. negative social).",
+      "NegativeOnline": "Description: When the response indicates negative experiences specifically related to online learning or the transition to online formats.  | When to apply: If the answer mentions difficulties, challenges, or negative aspects of online learning.  | When *not* to apply: When there is no mention of online learning, when the mention is positive, and when the negative adjective is used in a different context (e.g. negative course).",
+      "PositiveOnline": "Description: When the response indicates positive experiences specifically related to online learning or the transition to online formats.  | When to apply: If the answer mentions benefits, advantages, or positive aspects of online learning.  | When *not* to apply: When there is no mention of online learning, when the mention is negative, and when the positive adjective is used in a different context (e.g. positive course).",
+      "PreviousExperience": "Description: When the response indicates that prior experience *before university* in computer science or related fields has influenced their current experience *in university*.  | When to apply: If the answer mentions previous knowledge, skills, or experiences that have impacted their current studies.  | When *not* to apply: When there is no mention of relevant experience prior to university, or when prior experience is not linked to their current experience."
+    },
+    "General": {
+      "PositiveExperience": "Description: When the response indicates an overall positive experience with the computer science program but does not mention WHY it is positive.  | When to apply: If the answer uses positive adjectives (e.g., good, great, enjoyable) to describe their experience without elaborating on specific reasons.  | When *not* to apply: When there is no mention of positivity, when the mention is negative, and when the positive adjective is used in a different context (e.g. positive course).",
+      "Mixed": "Description: When the response indicates a mixed experience with both positive and negative aspects mentioned but does not mention WHY the experience is mixed.  | When to apply: If the answer includes both positive and negative sentiments about their experience without elaborating on specific reasons.  | When *not* to apply: When the response is solely positive or solely negative.",
+      "Bad": "Description: When the response indicates an overall negative experience with the computer science program but does not mention WHY it is negative.  | When to apply: If the answer uses negative adjectives (e.g., bad, horrible, miserable) to describe their experience without elaborating on specific reasons.  | When *not* to apply: When there is no mention of negativity, when the mention is positive, and when the negative adjective is used in a different context (e.g. negative course)."
+    }
+  },
+  "answers": [
+    {
+      "id": 0,
+      "text": "",
+      "annotations": {
+        "No Responses": {
+          "Blank": {
+            "section": "",
+            "confidence": 1.0,
+            "annotator": "human"
+          }
+        }
+      }
+    },
+    {
+      "id": 2,
+      "text": "With the transition to online, it's harder to stay focused but the content is more engaging",
+      "annotations": {
+        "CS Courses": {
+          "NegativeOnline": {
+            "section": "",
+            "confidence": 0.9,
+            "annotator": "gpt-4o-mini_llm"
+          },
+          "PositiveCourse": {
+            "section": "",
+            "confidence": 0.8,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        }
+      }
+    },
+    {
+      "id": 4,
+      "text": "",
+      "annotations": {
+        "No Responses": {
+          "Blank": {
+            "section": "",
+            "confidence": 1.0,
+            "annotator": "human"
+          }
+        }
+      }
+    },
+    {
+      "id": 16,
+      "text": "hard. ",
+      "annotations": {
+        "CS Courses": {
+          "StruggleChallenging": {
+            "section": "",
+            "confidence": 1.0,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        }
+      }
+    },
+    {
+      "id": 17,
+      "text": "I have truly enjoyed the computer science courses that I am taking as of right now. I am able to learn new programming languages like Java. Similar to most courses, they are challenging, but rewarding when these challenges are overcome. ",
+      "annotations": {
+        "General": {
+          "PositiveExperience": {
+            "section": "",
+            "confidence": 1.0,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        },
+        "CS Courses": {
+          "PositiveCourse": {
+            "section": "",
+            "confidence": 1.0,
+            "annotator": "gpt-4o-mini_llm"
+          },
+          "StruggleChallenging": {
+            "section": "",
+            "confidence": 1.0,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        }
+      }
+    },
+    {
+      "id": 21,
+      "text": "It has been better than I expected since I found my previous year hectic. This year is quite hectic for sure, but I find that I have enough time and support to get through the material.",
+      "annotations": {
+        "General": {
+          "PositiveExperience": {
+            "section": "",
+            "confidence": 1.0,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        },
+        "CS Courses": {
+          "StruggleWorkload": {
+            "section": "",
+            "confidence": 1.0,
+            "annotator": "gpt-4o-mini_llm"
+          },
+          "PositiveOnline": {
+            "section": "",
+            "confidence": 1.0,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        },
+        "Social Support": {
+          "PositiveSocial": {
+            "section": "",
+            "confidence": 1.0,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        }
+      }
+    },
+    {
+      "id": 23,
+      "text": "Challenging but doable. First year was especially crushing, especially online.",
+      "annotations": {
+        "CS Courses": {
+          "StruggleChallenging": {
+            "section": "",
+            "confidence": 1.0,
+            "annotator": "gpt-4o-mini_llm"
+          },
+          "StruggleWorkload": {
+            "section": "",
+            "confidence": 1.0,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        },
+        "General": {
+          "Bad": {
+            "section": "",
+            "confidence": 1.0,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        }
+      }
+    },
+    {
+      "id": 27,
+      "text": "First year was overall not bad, it was difficult for me as a student to pick up with the pace everything was going  but as I got used to it, it was not so bad after all. As we got into second year, things have gone worse, mainly due to one of my CS courses that I am currently taking (will add more on this in the next question). If it was not for that specific course I think I would have been much happier, but this course has been really making me rethink my decision of taking CS at UTM in the first place. If we are to talk about the content, the content is not too difficult for me to handle, but the coordination of the course is just ridiculous.",
+      "annotations": {
+        "General": {
+          "Mixed": {
+            "section": "",
+            "confidence": 0.8,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        },
+        "CS Courses": {
+          "StruggleChallenging": {
+            "section": "",
+            "confidence": 0.9,
+            "annotator": "gpt-4o-mini_llm"
+          },
+          "NegativeCourse": {
+            "section": "",
+            "confidence": 0.9,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        }
+      }
+    },
+    {
+      "id": 30,
+      "text": "It has been quite nice in 3rd year, the professors have been really understanding and empathetic with deadlines and conflicts with other courses. They have also been really helpful in posting lecture recordings to refer back to as study notes. The midterms have been really fair, and gave more than enough time to complete all questions.",
+      "annotations": {
+        "General": {
+          "PositiveExperience": {
+            "section": "",
+            "confidence": 1.0,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        },
+        "Social Support": {
+          "PositiveSocial": {
+            "section": "",
+            "confidence": 1.0,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        },
+        "CS Courses": {
+          "PositiveCourse": {
+            "section": "",
+            "confidence": 1.0,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        }
+      }
+    },
+    {
+      "id": 35,
+      "text": "Uneventful",
+      "annotations": {
+        "General": {
+          "Mixed": {
+            "section": "",
+            "confidence": 0.8,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        }
+      }
+    },
+    {
+      "id": 46,
+      "text": "It is a good teaching experience but hard to manage all the work with other courses ongoing",
+      "annotations": {
+        "General": {
+          "PositiveExperience": {
+            "section": "",
+            "confidence": 1.0,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        },
+        "CS Courses": {
+          "StruggleWorkload": {
+            "section": "",
+            "confidence": 1.0,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        }
+      }
+    },
+    {
+      "id": 49,
+      "text": "Very bumpy at first, since I had no prior knowledge of programming at all, but the help of peers and professors helped me aplenty. ",
+      "annotations": {
+        "CS Courses": {
+          "StruggleChallenging": {
+            "section": "",
+            "confidence": 1.0,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        },
+        "Social Support": {
+          "PositiveSocial": {
+            "section": "",
+            "confidence": 1.0,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        },
+        "General": {
+          "Mixed": {
+            "section": "",
+            "confidence": 1.0,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        }
+      }
+    },
+    {
+      "id": 51,
+      "text": "Experience has been okay. A levels were very good. B level courses were not good.",
+      "annotations": {
+        "General": {
+          "PositiveExperience": {
+            "section": "",
+            "confidence": 0.8,
+            "annotator": "gpt-4o-mini_llm"
+          },
+          "Mixed": {
+            "section": "",
+            "confidence": 0.8,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        },
+        "CS Courses": {
+          "NegativeCourse": {
+            "section": "",
+            "confidence": 0.9,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        }
+      }
+    },
+    {
+      "id": 102,
+      "text": "Its been good but stressful",
+      "annotations": {
+        "General": {
+          "PositiveExperience": {
+            "section": "",
+            "confidence": 0.8,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        },
+        "CS Courses": {
+          "StruggleWorkload": {
+            "section": "",
+            "confidence": 0.8,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "question": "How would you describe your experience with the computer science program in your current year of study? How has it been so far?",
+  "themes": {
+    "No Responses": {
+      "Blank": "Description: When the response intentionally provides no information.  | When to apply: If the answer is no text, Blank, No, N/A, etc.  | When *not* to apply: When there is any text that provides some information, even if minimal.",
+      "NoRelevant": "Description: When the response contains information that is irrelevant to the provided question.  | When to apply: On nonsense responses such as 'aaaa', or to responses that are unrelated to the question prompt.  | When *not* to apply: When there is any text that provides some relevant information, even if minimal."
+    },
+    "Social Support": {
+      "PositiveSocial": "Description: When the response indicates positive social support from peers, instructors, or the program community.  | When to apply: If the answer mentions helpfulness, support, community, or positive interactions with others in the program.  | When *not* to apply: When there is no mention of social support, when the mention is negative/neutral., and when the positive adjective is used in a different context (e.g. positive course).",
+      "NegativeBelonging": "Description: When the response indicates feelings of not belonging, isolation, self-doubt, or negative social experiences within the program.  | When to apply: If the answer mentions feeling out of place, unsupported, or negative interactions with others in the program.  | When *not* to apply: When there is no mention of social support, when the mention is positive, and when the negative adjective is used in a different context (e.g. negative online)."
+    },
+    "CS Courses": {
+      "StruggleChallenging": "Description: When the response indicates that their courses or the content have been particularly challenging or difficult in a negative way.  | When to apply: Only if the answer mentions (explicitly or implicitly) that the workload is difficult/causing difficulty and that the student feels negatively about this.  | When *not* to apply: When there is no mention of difficulty, when the mention is positive, when the difficulty is related to another theme (e.g., workload), or when the student mentions that they enjoy the challenge.",
+      "StruggleWorkload": "Description: When the response indicates that their workload has been particularly heavy or unmanageable.  | When to apply: Only if the answer mentions (explicitly or implicitly) that the workload is heavy or that the student has been struggling with the workload (this can include tasks such as labs, tests, time spent studying, etc.).  | When *not* to apply: When there is no mention of workload, when the mention is positive, and when the difficulty is related to another theme (e.g., content difficulty).",
+      "PositiveCourse": "Description: When the response indicates a positive experience with their computer science courses or the content.  | When to apply: If the answer mentions enjoyment, interest, or positive aspects of the courses or content.  | When *not* to apply: When there is no mention of course positivity, when the mention is negative, and when the positive adjective is used in a different context (e.g. positive online).",
+      "NegativeCourse": "Description: When the response indicates a negative experience with their computer science courses or the content.  | When to apply: If the answer mentions dissatisfaction, disinterest, or negative aspects of the courses or content.  | When *not* to apply: When there is no mention of course negativity, when the mention is positive, and when the negative adjective is used in a different context (e.g. negative social).",
+      "NegativeOnline": "Description: When the response indicates negative experiences specifically related to online learning or the transition to online formats.  | When to apply: If the answer mentions difficulties, challenges, or negative aspects of online learning.  | When *not* to apply: When there is no mention of online learning, when the mention is positive, and when the negative adjective is used in a different context (e.g. negative course).",
+      "PositiveOnline": "Description: When the response indicates positive experiences specifically related to online learning or the transition to online formats.  | When to apply: If the answer mentions benefits, advantages, or positive aspects of online learning.  | When *not* to apply: When there is no mention of online learning, when the mention is negative, and when the positive adjective is used in a different context (e.g. positive course).",
+      "PreviousExperience": "Description: When the response indicates that prior experience *before university* in computer science or related fields has influenced their current experience *in university*.  | When to apply: If the answer mentions previous knowledge, skills, or experiences that have impacted their current studies.  | When *not* to apply: When there is no mention of relevant experience prior to university, or when prior experience is not linked to their current experience."
+    },
+    "General": {
+      "PositiveExperience": "Description: When the response indicates an overall positive experience with the computer science program but does not mention WHY it is positive.  | When to apply: If the answer uses positive adjectives (e.g., good, great, enjoyable) to describe their experience without elaborating on specific reasons.  | When *not* to apply: When there is no mention of positivity, when the mention is negative, and when the positive adjective is used in a different context (e.g. positive course).",
+      "Mixed": "Description: When the response indicates a mixed experience with both positive and negative aspects mentioned but does not mention WHY the experience is mixed.  | When to apply: If the answer includes both positive and negative sentiments about their experience without elaborating on specific reasons.  | When *not* to apply: When the response is solely positive or solely negative.",
+      "Bad": "Description: When the response indicates an overall negative experience with the computer science program but does not mention WHY it is negative.  | When to apply: If the answer uses negative adjectives (e.g., bad, horrible, miserable) to describe their experience without elaborating on specific reasons.  | When *not* to apply: When there is no mention of negativity, when the mention is positive, and when the negative adjective is used in a different context (e.g. negative course)."
+    }
+  },
+  "answers": [
+    {
+      "id": 3,
+      "text": "Good, everything is well managed. ",
+      "annotations": {
+        "General": {
+          "PositiveExperience": {
+            "section": "",
+            "confidence": 1.0,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        }
+      }
+    },
+    {
+      "id": 11,
+      "text": "It has been okay.",
+      "annotations": {
+        "General": {
+          "PositiveExperience": {
+            "section": "",
+            "confidence": 1.0,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        }
+      }
+    },
+    {
+      "id": 30,
+      "text": "It has been quite nice in 3rd year, the professors have been really understanding and empathetic with deadlines and conflicts with other courses. They have also been really helpful in posting lecture recordings to refer back to as study notes. The midterms have been really fair, and gave more than enough time to complete all questions.",
+      "annotations": {
+        "General": {
+          "PositiveExperience": {
+            "section": "",
+            "confidence": 1.0,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        },
+        "CS Courses": {
+          "PositiveCourse": {
+            "section": "",
+            "confidence": 1.0,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        },
+        "Social Support": {
+          "PositiveSocial": {
+            "section": "",
+            "confidence": 1.0,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        }
+      }
+    },
+    {
+      "id": 31,
+      "text": "Notbad, but CSC311 pain",
+      "annotations": {
+        "CS Courses": {
+          "StruggleChallenging": {
+            "section": "",
+            "confidence": 0.9,
+            "annotator": "gpt-4o-mini_llm"
+          },
+          "NegativeCourse": {
+            "section": "",
+            "confidence": 0.9,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        },
+        "General": {
+          "Mixed": {
+            "section": "",
+            "confidence": 0.9,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        }
+      }
+    },
+    {
+      "id": 32,
+      "text": "It\u2019s getting better, still not enjoyable. ",
+      "annotations": {
+        "General": {
+          "Mixed": {
+            "section": "",
+            "confidence": 0.8,
+            "annotator": "gpt-4o-mini_llm"
+          }
+        }
+      }
+    }
+  ]
+}

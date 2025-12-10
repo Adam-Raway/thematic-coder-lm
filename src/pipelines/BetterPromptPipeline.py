@@ -2,50 +2,31 @@ import json, os
 from datetime import datetime
 from src.llms.LLM_Wrappers import AbstractLLM
 from src.pipelines.AbstractTAPipeline import AbstractTAPipeline
+from src.pipelines.SimplePromptPipeline import SimplePromptPipeline
 
-
-class BetterPromptPipeline(AbstractTAPipeline):
-    def __init__(
-        self,
-        llm: AbstractLLM,
-        input_path: str,
-        output_dir: str | None = None,
-        output_name: str | None = None,
-        log_dir: str = "logs",
-        use_cache: bool = True
-    ):
-        super().__init__(llm, input_path, output_dir, output_name, use_cache)
-        self.log_dir = log_dir
-        os.makedirs(log_dir, exist_ok=True)
-
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        input_name = os.path.splitext(os.path.basename(input_path))[0]
-        self.log_path = os.path.join(log_dir, f"{input_name}_{timestamp}.log")
-        self.log_file = open(self.log_path, "a", encoding="utf-8")
-
+class BetterPromptDescPipeline(SimplePromptPipeline):
     def __str__(self):
-        return "BetterPromptPipeline"
-
-    def log(self, message: str):
-        ts = datetime.now().strftime("%H:%M:%S")
-        self.log_file.write(f"[{ts}] {message}\n")
-        self.log_file.flush()
+        return "BetterPromptDescPipeline"
 
     def _format_codebook(self) -> dict:
         """
-        Converts the new format {theme: {code: desc}} into
-        {theme: [code, ...]} for prompt compatibility.
+        Convert {theme: {code: description}} → {theme: [{"code":..., "description":...}, ...]}
         """
         formatted = {}
         for theme, codes in self.codebook.items():
-            # ignore descriptions
-            formatted[theme] = list(codes.keys()) if isinstance(codes, dict) else codes
+            if isinstance(codes, dict):
+                formatted[theme] = [
+                    {"code": code, "description": desc or ""}
+                    for code, desc in codes.items()
+                ]
+            else:
+                formatted[theme] = [{"code": c, "description": ""} for c in codes]
         return formatted
 
     def annotate_entry(self, entry: dict) -> dict:
         text = entry.get("text", "").strip()
 
-        # 1. Handle blank text
+        # --- Handle blank text ----
         if not text:
             entry["annotations"] = {
                 "No Responses": {
@@ -59,61 +40,80 @@ class BetterPromptPipeline(AbstractTAPipeline):
             self.log(f"Entry {entry['id']}: Blank text — annotated with 'Blank' code.")
             return entry
 
-        # 2. Format codebook (ignore descriptions)
+        # --- Prepare codebook and question ----
         codebook_for_prompt = self._format_codebook()
+        question_str = self._get_question_from_data()
 
-        # 3. Construct prompt
+        # --- Improved Prompt ---
         prompt = f"""
-        You are a highly accurate thematic annotator. Given a survey question and its response, you apply qualitative codes strictly using the provided codebook to the response. Follow all instructions precisely and output *only* valid JSON.
+You are a highly accurate thematic annotator. You will receive a survey question, a response, 
+and a detailed codebook. Your job is to determine which themes and codes apply to the response.
+You must follow all rules exactly and output ONLY valid JSON.
 
-        INSTRUCTIONS:
-        1. Use only themes and codes that appear in the codebook. Never invent new codes.
-        2. Apply a code only if the text clearly supports it. Avoid speculative inference.
-        3. If a code applies to the entire text, set "section": "".
-        4. If a code applies to part of the text, use Python-style character index slicing: "[start:end]".
-        5. Confidence must be a float between 0 and 1.
-        6. If no codes apply, return: {{"annotations": {{}}}}
-        7. Think step-by-step internally, but output only the final JSON object.
-        8. Output strictly valid JSON — no explanations, no notes, no markdown, no code fences.
-        9. Include only themes that contain at least one detected code.
+=====================
+INSTRUCTIONS
+=====================
+1. Use ONLY themes and codes exactly as listed in the codebook.
+2. For each theme, evaluate all of its codes independently.
+3. Each code includes a "description". Treat this description as authoritative:
+   - Apply a code ONLY when the response clearly satisfies the description.
+   - If the description implies exclusion conditions, obey them strictly.
+4. Prefer precision over recall: do NOT guess or speculate.
+5. Decide whether each code applies to:
+   - the ENTIRE text → "section": ""
+   - a SPECIFIC part → "section": "[start:end]"
+6. Use Python-style character indices (0-based) on the original response.
+7. Confidence must be a float between 0 and 1.
+8. If no codes apply, return: {{"annotations": {{}}}}
+9. Think carefully, but DO NOT reveal your reasoning. Output only the JSON object.
+10. Do NOT add markdown, comments, or extra text.
 
-        OUTPUT SCHEMA (follow exactly):
-        {{
-        "annotations": {{
-            "<theme-name>": {{
-            "<code-name>": {{
-                "section": "[start:end]",
-                "confidence": float,
-                "annotator": "{self.llm.model_name}"
-            }}
-            }}
-        }}
-        }}
+=====================
+OUTPUT SCHEMA (follow exactly)
+=====================
+{{
+  "annotations": {{
+    "<theme-name>": {{
+      "<code-name>": {{
+        "section": "[start:end]" or "",
+        "confidence": 0.0-1.0,
+        "annotator": "{self.llm.model_name}"
+      }}
+    }}
+  }}
+}}
 
-        QUESTION:
-        {self._get_question_from_data()}
+=====================
+QUESTION
+=====================
+{question_str}
 
-        CODEBOOK:
-        {json.dumps(codebook_for_prompt, indent=2)}
+=====================
+CODEBOOK
+=====================
+{json.dumps(codebook_for_prompt, indent=2)}
 
-        TEXT:
-        {json.dumps(text)}
+=====================
+RESPONSE TEXT
+=====================
+{json.dumps(text)}
 
-        Return ONLY the JSON object.
-        """
+Return ONLY the JSON object.
+"""
 
-        # 4. Generate + parse JSON
+        # --- Generate LLM output ---
         response = self.llm.generate(prompt)
 
+        # --- Parse + Validate JSON ---
         try:
             result = self.llm.clean_and_parse_json(response)
             annotation = result.get("annotations", {})
 
             if self.validate_annotation_structure(annotation):
                 entry["annotations"] = annotation
-                self.log(f"Entry {entry['id']}: JSON processed successfully.")
+                self.log(f"Entry {entry['id']}: JSON processed successfully (better desc mode).")
             else:
-                self.log(f"Entry {entry['id']}: JSON produced but invalid format.")
+                self.log(f"Entry {entry['id']}: Invalid JSON schema (better desc mode).")
                 self.log(f"Raw LLM output:\n{response}\n{'-'*60}")
                 entry["annotations"] = {
                     "Error": {
@@ -126,7 +126,7 @@ class BetterPromptPipeline(AbstractTAPipeline):
                 }
 
         except Exception as e:
-            self.log(f"Entry {entry['id']}: JSON parsing error: {e}")
+            self.log(f"Entry {entry['id']}: JSON parsing error (better desc mode): {e}")
             self.log(f"Raw LLM output:\n{response}\n{'-'*60}")
             entry["annotations"] = {
                 "Error": {
@@ -139,20 +139,6 @@ class BetterPromptPipeline(AbstractTAPipeline):
             }
 
         return entry
-
-    def run(self) -> str:
-        self.log(f"=== Pipeline started for {self.input_path} using {self.llm.model_name} ===")
-        try:
-            output_path = super().run()
-            self.log(f"Pipeline completed successfully. Output at {output_path}")
-        except Exception as e:
-            self.log(f"Pipeline failed: {e}")
-            raise
-        finally:
-            self.log_file.close()
-            print(f"Logs saved to {self.log_path}")
-        return output_path
-
 
 
 # ----------------------------------------------------------------------
